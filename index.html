@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tombol Magic + Cahaya Bernapas</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212; 
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* --- DEFINISI ANIMASI (KEYFRAMES) --- */
+        
+        /* 1. Animasi Ombak Merah (Lambat & Halus) */
+        @keyframes ombakMerah {
+            0% {
+                box-shadow: 
+                    0 10px 30px rgba(0,0,0,0.5),
+                    0 0 20px rgba(255, 71, 87, 0.4),
+                    0 0 30px rgba(255, 71, 87, 0.1);
+            }
+            50% {
+                /* Cahaya melebar */
+                box-shadow: 
+                    0 10px 30px rgba(0,0,0,0.5),
+                    0 0 30px rgba(255, 71, 87, 0.7),
+                    0 0 60px rgba(255, 71, 87, 0.4);
+            }
+            100% {
+                /* Kembali mengecil */
+                box-shadow: 
+                    0 10px 30px rgba(0,0,0,0.5),
+                    0 0 20px rgba(255, 71, 87, 0.4),
+                    0 0 30px rgba(255, 71, 87, 0.1);
+            }
+        }
+
+        /* 2. Animasi Ombak Hijau (Lebih Terang & Intens) */
+        @keyframes ombakHijau {
+            0% {
+                box-shadow: 
+                    0 15px 40px rgba(0,0,0,0.6),
+                    0 0 20px #2ed573,
+                    0 0 40px rgba(46, 213, 115, 0.5);
+                border-color: rgba(46, 213, 115, 0.5);
+            }
+            50% {
+                /* Cahaya meledak keluar */
+                box-shadow: 
+                    0 15px 40px rgba(0,0,0,0.6),
+                    0 0 40px #2ed573,
+                    0 0 80px rgba(46, 213, 115, 0.8),
+                    0 0 120px rgba(46, 213, 115, 0.4);
+                border-color: #2ed573;
+            }
+            100% {
+                box-shadow: 
+                    0 15px 40px rgba(0,0,0,0.6),
+                    0 0 20px #2ed573,
+                    0 0 40px rgba(46, 213, 115, 0.5);
+                border-color: rgba(46, 213, 115, 0.5);
+            }
+        }
+
+        /* --- KOTAK CONTAINER --- */
+        .kotak-container {
+            padding: 60px;
+            background: #2b2b2b;
+            border-radius: 25px;
+            border: 2px solid transparent; 
+            
+            /* Terapkan Animasi Merah sebagai default */
+            /* 3s = durasi 3 detik (lambat), infinite = selamanya */
+            animation: ombakMerah 3s infinite ease-in-out;
+        }
+
+        /* --- KOTAK SAAT AKTIF (HIJAU) --- */
+        .kotak-container.container-active {
+            /* Ganti animasi jadi Hijau saat kelas ini aktif */
+            animation: ombakHijau 2s infinite ease-in-out;
+        }
+
+        /* --- TOMBOL (Tetap sama, tapi saya rapikan) --- */
+        .btn-try-again {
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+            padding: 20px 50px;
+            border: none;
+            cursor: pointer;
+            border-radius: 15px;
+            outline: none;
+            position: relative;
+            transition: all 0.3s ease;
+            background-color: #ff4757; 
+            box-shadow: 0 8px 0 #b33939, 0 15px 20px rgba(0,0,0,0.4);
+            user-select: none;
+        }
+
+        .btn-try-again:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #b33939, 0 8px 10px rgba(0,0,0,0.4);
+        }
+
+        .btn-try-again.success {
+            background-color: #2ed573;
+            box-shadow: 
+                0 8px 0 #218c74, 
+                0 0 20px #2ed573, 
+                0 0 40px #2ed573;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        .btn-try-again.success:active {
+            box-shadow: 
+                0 4px 0 #218c74, 
+                0 0 20px #2ed573;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="kotakLuar" class="kotak-container">
+        <button id="magicBtn" class="btn-try-again">
+            Try Again
+        </button>
+    </div>
+
+    <script>
+        const tombol = document.getElementById('magicBtn');
+        const kotakLuar = document.getElementById('kotakLuar');
+
+        tombol.addEventListener('click', function() {
+            // Toggle class tombol
+            this.classList.toggle('success');
+            
+            // Toggle class kotak luar (ini akan memicu pergantian animasi CSS)
+            kotakLuar.classList.toggle('container-active');
+
+            if (this.classList.contains('success')) {
+                 // Opsional: text berubah
+                 // this.innerHTML = "Success!";
+            } else {
+                 this.innerHTML = "Try Again";
+            }
+        });
+    </script>
+
+</body>
+</html>
