@@ -3,153 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tombol Magic + Cahaya Bernapas</title>
+    <title>Game Popup UI</title>
     <style>
+        /* --- LAYOUT UTAMA --- */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #121212; 
+            /* Latar belakang diberi pola grid agar seperti layar game */
+            background-color: #0a0a0a;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
             margin: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Courier New', Courier, monospace; /* Font ala coding/game */
         }
 
-        /* --- DEFINISI ANIMASI (KEYFRAMES) --- */
-        
-        /* 1. Animasi Ombak Merah (Lambat & Halus) */
-        @keyframes ombakMerah {
-            0% {
-                box-shadow: 
-                    0 10px 30px rgba(0,0,0,0.5),
-                    0 0 20px rgba(255, 71, 87, 0.4),
-                    0 0 30px rgba(255, 71, 87, 0.1);
-            }
-            50% {
-                /* Cahaya melebar */
-                box-shadow: 
-                    0 10px 30px rgba(0,0,0,0.5),
-                    0 0 30px rgba(255, 71, 87, 0.7),
-                    0 0 60px rgba(255, 71, 87, 0.4);
-            }
-            100% {
-                /* Kembali mengecil */
-                box-shadow: 
-                    0 10px 30px rgba(0,0,0,0.5),
-                    0 0 20px rgba(255, 71, 87, 0.4),
-                    0 0 30px rgba(255, 71, 87, 0.1);
-            }
+        /* --- ANIMASI DENYUT (BREATHING) --- */
+        @keyframes borderPulseRed {
+            0% { box-shadow: 0 0 10px rgba(255, 71, 87, 0.2), inset 0 0 10px rgba(255, 71, 87, 0.1); border-color: rgba(255, 71, 87, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(255, 71, 87, 0.6), inset 0 0 20px rgba(255, 71, 87, 0.3); border-color: #ff4757; }
+            100% { box-shadow: 0 0 10px rgba(255, 71, 87, 0.2), inset 0 0 10px rgba(255, 71, 87, 0.1); border-color: rgba(255, 71, 87, 0.5); }
         }
 
-        /* 2. Animasi Ombak Hijau (Lebih Terang & Intens) */
-        @keyframes ombakHijau {
-            0% {
-                box-shadow: 
-                    0 15px 40px rgba(0,0,0,0.6),
-                    0 0 20px #2ed573,
-                    0 0 40px rgba(46, 213, 115, 0.5);
-                border-color: rgba(46, 213, 115, 0.5);
-            }
-            50% {
-                /* Cahaya meledak keluar */
-                box-shadow: 
-                    0 15px 40px rgba(0,0,0,0.6),
-                    0 0 40px #2ed573,
-                    0 0 80px rgba(46, 213, 115, 0.8),
-                    0 0 120px rgba(46, 213, 115, 0.4);
-                border-color: #2ed573;
-            }
-            100% {
-                box-shadow: 
-                    0 15px 40px rgba(0,0,0,0.6),
-                    0 0 20px #2ed573,
-                    0 0 40px rgba(46, 213, 115, 0.5);
-                border-color: rgba(46, 213, 115, 0.5);
-            }
+        @keyframes borderPulseGreen {
+            0% { box-shadow: 0 0 15px rgba(46, 213, 115, 0.2), inset 0 0 10px rgba(46, 213, 115, 0.1); border-color: rgba(46, 213, 115, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(46, 213, 115, 0.8), inset 0 0 30px rgba(46, 213, 115, 0.4); border-color: #2ed573; }
+            100% { box-shadow: 0 0 15px rgba(46, 213, 115, 0.2), inset 0 0 10px rgba(46, 213, 115, 0.1); border-color: rgba(46, 213, 115, 0.5); }
         }
 
-        /* --- KOTAK CONTAINER --- */
-        .kotak-container {
-            padding: 60px;
-            background: #2b2b2b;
-            border-radius: 25px;
-            border: 2px solid transparent; 
+        /* --- DESAIN POPUP GAME --- */
+        .game-popup {
+            width: 350px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(20, 20, 30, 0.95); /* Gelap transparan */
+            border: 2px solid #ff4757; /* Border Merah Awal */
+            color: #ff4757;
+            position: relative;
             
-            /* Terapkan Animasi Merah sebagai default */
-            /* 3s = durasi 3 detik (lambat), infinite = selamanya */
-            animation: ombakMerah 3s infinite ease-in-out;
+            /* Magic Line: Membuat sudut terpotong (sci-fi look) */
+            clip-path: polygon(
+                0 0, 100% 0, 
+                100% 85%, 92% 100%, 
+                0 100%, 0 15%
+            );
+
+            transition: all 0.5s ease;
+            
+            /* Default Animation (Merah) */
+            animation: borderPulseRed 2s infinite ease-in-out;
         }
 
-        /* --- KOTAK SAAT AKTIF (HIJAU) --- */
-        .kotak-container.container-active {
-            /* Ganti animasi jadi Hijau saat kelas ini aktif */
-            animation: ombakHijau 2s infinite ease-in-out;
+        /* Judul Popup (Header) */
+        .popup-title {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px currentColor; /* Text glow */
         }
 
-        /* --- TOMBOL (Tetap sama, tapi saya rapikan) --- */
-        .btn-try-again {
-            font-size: 24px;
+        /* Sub-judul / Deskripsi */
+        .popup-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* --- STATE POPUP SUKSES (HIJAU) --- */
+        .game-popup.active-green {
+            border-color: #2ed573;
+            color: #2ed573;
+            background: rgba(10, 40, 20, 0.95);
+            animation: borderPulseGreen 1.5s infinite ease-in-out;
+        }
+
+        /* --- TOMBOL (Gaya Tech) --- */
+        .btn-game {
+            width: 80%;
+            padding: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
             font-weight: bold;
             text-transform: uppercase;
             color: white;
-            padding: 20px 50px;
+            background: #ff4757;
             border: none;
             cursor: pointer;
-            border-radius: 15px;
-            outline: none;
+            
+            /* Bentuk tombol miring sedikit */
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+            
+            box-shadow: 0 5px 0 #b33939;
+            transition: all 0.3s;
             position: relative;
-            transition: all 0.3s ease;
-            background-color: #ff4757; 
-            box-shadow: 0 8px 0 #b33939, 0 15px 20px rgba(0,0,0,0.4);
-            user-select: none;
+            overflow: hidden;
         }
 
-        .btn-try-again:active {
+        /* Efek kilatan pada tombol */
+        .btn-game::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn-game:hover::before {
+            left: 100%;
+        }
+
+        .btn-game:active {
             transform: translateY(4px);
-            box-shadow: 0 4px 0 #b33939, 0 8px 10px rgba(0,0,0,0.4);
+            box-shadow: 0 1px 0 #b33939;
         }
 
-        .btn-try-again.success {
-            background-color: #2ed573;
-            box-shadow: 
-                0 8px 0 #218c74, 
-                0 0 20px #2ed573, 
-                0 0 40px #2ed573;
-            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+        /* Tombol Sukses */
+        .btn-game.success {
+            background: #2ed573;
+            box-shadow: 0 5px 0 #218c74, 0 0 20px #2ed573;
+            color: #000; /* Text hitam biar kontras dengan hijau neon */
         }
-
-        .btn-try-again.success:active {
-            box-shadow: 
-                0 4px 0 #218c74, 
-                0 0 20px #2ed573;
+        .btn-game.success:active {
+            box-shadow: 0 1px 0 #218c74;
         }
 
     </style>
 </head>
 <body>
 
-    <div id="kotakLuar" class="kotak-container">
-        <button id="magicBtn" class="btn-try-again">
-            Try Again
+    <div id="gamePopup" class="game-popup">
+        <div id="popupTitle" class="popup-title">MISSION FAILED</div>
+        <div class="popup-desc">SYSTEM COMPROMISED. RETRY?</div>
+        
+        <button id="magicBtn" class="btn-game">
+            TRY AGAIN
         </button>
     </div>
 
     <script>
         const tombol = document.getElementById('magicBtn');
-        const kotakLuar = document.getElementById('kotakLuar');
+        const popup = document.getElementById('gamePopup');
+        const title = document.getElementById('popupTitle');
 
         tombol.addEventListener('click', function() {
-            // Toggle class tombol
+            // Toggle tombol
             this.classList.toggle('success');
             
-            // Toggle class kotak luar (ini akan memicu pergantian animasi CSS)
-            kotakLuar.classList.toggle('container-active');
+            // Toggle container popup
+            popup.classList.toggle('active-green');
 
+            // Logika Ubah Teks
             if (this.classList.contains('success')) {
-                 // Opsional: text berubah
-                 // this.innerHTML = "Success!";
+                this.innerHTML = "CONTINUE >>";
+                title.innerHTML = "SYSTEM RESTORED";
+                title.style.color = "#2ed573";
             } else {
-                 this.innerHTML = "Try Again";
+                this.innerHTML = "TRY AGAIN";
+                title.innerHTML = "MISSION FAILED";
+                title.style.color = "#ff4757";
             }
         });
     </script>
