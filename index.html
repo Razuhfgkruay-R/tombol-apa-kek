@@ -44,14 +44,6 @@
             color: #ff4757;
             position: relative;
             
-            /* Magic Line: Membuat sudut terpotong (sci-fi look) */
-            clip-path: polygon(
-                0 0, 100% 0, 
-                100% 85%, 92% 100%, 
-                0 100%, 0 15%
-            );
-
-            transition: all 0.5s ease;
             
             /* Default Animation (Merah) */
             animation: borderPulseRed 2s infinite ease-in-out;
@@ -138,8 +130,8 @@
 <body>
 
     <div id="gamePopup" class="game-popup">
-        <div id="popupTitle" class="popup-title">MISSION FAILED</div>
-        <div class="popup-desc">SYSTEM COMPROMISED. RETRY?</div>
+        <div id="popupTitle" class="popup-title">TRY AGAIN?</div>
+        <div class="popup-desc">Tap To Continue</div>
         
         <button id="magicBtn" class="btn-game">
             TRY AGAIN
@@ -161,11 +153,11 @@
             // Logika Ubah Teks
             if (this.classList.contains('success')) {
                 this.innerHTML = "CONTINUE >>";
-                title.innerHTML = "SYSTEM RESTORED";
+                title.innerHTML = "TRY AGAIN";
                 title.style.color = "#2ed573";
             } else {
-                this.innerHTML = "TRY AGAIN";
-                title.innerHTML = "MISSION FAILED";
+                this.innerHTML = "TAP BUTTON";
+                title.innerHTML = "TRY AGAIN?";
                 title.style.color = "#ff4757";
             }
         });
