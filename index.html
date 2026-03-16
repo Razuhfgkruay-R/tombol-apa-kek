@@ -2,240 +2,297 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Popup UI - Ultimate Version</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rider's Cockpit - Control Center</title>
     <style>
-    
+        /* --- Reset & Base --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none; /* Cegah teks terseleksi */
+            user-select: none;
+        }
+
         body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            height: 100vh;
+            overflow: hidden; /* Lock screen */
+            display: flex;
+            flex-direction: column;
+            color: #333;
+        }
+
+        /* --- Frutiger Aero Aesthetics (Global) --- */
+        .glossy-base {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.2) 100%);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        /* --- Header / Status Bar --- */
+        header {
+            padding: 15px;
+            text-align: center;
+            height: 15vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #00FF00; /* Saya ganti abu gelap biar mata tidak sakit, kembalikan ke #00FF00 jika perlu green screen */
-            margin: 0;
-            font-family: 'Orbitron', sans-serif; 
         }
 
-        /* --- ANIMASI & STYLE POPUP (SAMA SEPERTI SEBELUMNYA) --- */
-        @keyframes borderPulseRed {
-            0% { box-shadow: 0 0 10px rgba(255, 71, 87, 0.2); border-color: rgba(255, 71, 87, 0.5); }
-            50% { box-shadow: 0 0 35px rgba(255, 71, 87, 0.5); border-color: #ff4757; }
-            100% { box-shadow: 0 0 10px rgba(255, 71, 87, 0.2); border-color: rgba(255, 71, 87, 0.5); }
+        header h1 {
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-weight: 600;
         }
 
-        @keyframes borderPulseBlue {
-            0% { box-shadow: 0 0 15px rgba(10, 189, 227, 0.2); border-color: rgba(10, 189, 227, 0.5); }
-            50% { box-shadow: 0 0 50px rgba(10, 189, 227, 0.8); border-color: #0abde3; }
-            100% { box-shadow: 0 0 15px rgba(10, 189, 227, 0.2); border-color: rgba(10, 189, 227, 0.5); }
+        /* --- Main Content (Grid) --- */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Kolom */
+            grid-template-rows: 1fr 1fr;    /* 2 Baris */
+            gap: 15px;
+            padding: 15px;
+            height: 85vh;
         }
 
-        @keyframes popSwitch {
-            0% { transform: scale(1); }
-            40% { transform: scale(0.95); filter: brightness(1.3); } 
-            80% { transform: scale(1.02); } 
-            100% { transform: scale(1); }
-        }
-
-        .game-popup {
-            width: 380px; 
-            padding: 45px 20px;
+        /* --- Control Cards --- */
+        .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            background: #00FF00; /* Background popup agak gelap */
-            border: 2px solid #ff4757; 
-            color: #ff4757;
-            position: relative;
-            border-radius: 20px; 
-            transition: border-color 0.4s ease, color 0.4s ease, background 0.4s ease;
-            animation: borderPulseRed 2s infinite ease-in-out;
-        }
-
-        .game-popup.switching {
-            animation: popSwitch 0.3s ease-out forwards;
-        }
-
-        .popup-title {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            text-shadow: 0 0 15px currentColor; 
-            min-height: 40px; 
-        }
-
-        .popup-desc {
-            font-size: 11px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 35px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .game-popup.active-blue {
-            border-color: #0abde3;
-            color: #0abde3;
-            background: #00FF00;
-            animation: borderPulseBlue 1.5s infinite ease-in-out; 
-        }
-
-        .btn-game {
-            width: 80%;
-            padding: 18px 0;
-            height: 60px; /* Set height fix agar tombol tidak loncat saat loading muncul */
-            font-family: 'Orbitron', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: white;
-            background: #ff4757;
-            border: none;
-            cursor: pointer;
-            border-radius: 12px; 
-            box-shadow: 0 5px 0 #b33939;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.1s ease;
             position: relative;
             overflow: hidden;
-            text-shadow: 0 2px 2px rgba(0,0,0,0.3);
-            
-            /* Flexbox untuk menengahkan loader */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto; /* Center button */
+            cursor: pointer;
         }
 
-        .btn-game::after {
+        /* Efek Tekan --- */
+        .card:active {
+            transform: scale(0.95);
+        }
+
+        /* Efek Glossy / Cahaya --- */
+        .card::before {
             content: '';
             position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            transition: 0.5s;
-            opacity: 0;
-        }
-        .btn-game:hover::after {
-            opacity: 1;
-            left: 100%;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0.3;
+            transform: rotate(30deg);
         }
 
-        .btn-game:active {
-            transform: translateY(4px);
-            box-shadow: 0 1px 0 #b33939;
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
-        .btn-game.success {
-            background: #0abde3;
-            box-shadow: 0 5px 0 #0097e6, 0 0 25px rgba(10, 189, 227, 0.6);
-            color: #002b36; 
-        }
-        .btn-game.success:active {
-            box-shadow: 0 1px 0 #0097e6;
-        }
-
-        /* --- BAGIAN BARU: CSS LOADING SPINNER --- */
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(0, 43, 54, 0.3); /* Warna transparan gelap */
-            border-top-color: #002b36; /* Warna utama gelap (match teks tombol) */
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .wm {
-            position: fixed;
-            bottom: 20px;
-            font-size: 11px;
-            color: #94a3b8;
-            letter-spacing: 1px;
+        .label {
+            font-size: 1rem;
+            font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
+
+        .status-text {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            margin-top: 5px;
+        }
+
+        /* --- Specific Card Styles --- */
+        #card-music {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            grid-column: 1 / -1; /* Full width row 1 */
+        }
+
+        #card-bass {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+
+        #card-wa {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        #card-mute {
+            background: linear-gradient(135deg, #fab1a0 0%, #e17055 100%);
+        }
+
+        /* --- Audio Player Element --- */
+        #audio-element {
+            display: none; /* Sembunyikan player standar */
+        }
+
+        /* --- Visual Indicator untuk Bass Boost --- */
+        .led-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #555; /* Default mati */
+            border: 2px solid rgba(255,255,255,0.5);
+            margin-top: 10px;
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        .led-active {
+            background-color: #2eff2e; /* Hijau menyala */
+            box-shadow: 0 0 10px #2eff2e, inset 0 2px 3px rgba(255,255,255,0.5);
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="gamePopup" class="game-popup">
-        <div id="popupTitle" class="popup-title">TRY AGAIN</div>
-        <div class="popup-desc">Welcome Back Player</div>
-        
-        <button id="magicBtn" class="btn-game">
-            CONTINUE
-        </button>
-          
-    </div>
+    <header>
+        <h1 class="glossy-base" style="padding: 10px 20px;">RIDER'S COCKPIT</h1>
+    </header>
+
+    <main>
+        <div id="card-music" class="card glossy-base">
+            <div class="icon">🎵</div>
+            <div class="label">Music Player</div>
+            <div class="status-text" id="music-status">Isi File Musik & Tap to Play</div>
+            <audio id="audio-element" controls src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        </div>
+
+        <div id="card-bass" class="card glossy-base">
+            <div class="icon">🔊</div>
+            <div class="label">Bass Boost</div>
+            <div class="status-text">Perbaiki Suara Intercom</div>
+            <div class="led-indicator" id="bass-led"></div>
+        </div>
+
+        <div id="card-wa" class="card glossy-base">
+            <div class="icon">📱</div>
+            <div class="label">Jawab WA</div>
+            <div class="status-text">Trigger Makro HP</div>
+        </div>
+
+        <div id="card-mute" class="card glossy-base">
+            <div class="icon">🔇</div>
+            <div class="label">Mute</div>
+            <div class="status-text">Vol Musik 10%</div>
+        </div>
+    </main>
 
     <script>
-        const tombol = document.getElementById('magicBtn');
-        const popup = document.getElementById('gamePopup');
-        const title = document.getElementById('popupTitle');
+        // --- Setup State ---
+        let audioContext;
+        let source;
+        let bassFilter;
+        let isBassBoosted = false;
+        let isMuted = false;
+        const audioElement = document.getElementById('audio-element');
 
-        function scrambleText(element, finalText, color) {
-            let iterations = 0;
-            const symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*"; 
-            
-            const interval = setInterval(() => {
-                element.innerText = finalText
-                .split("")
-                .map((letter, index) => {
-                    if(index < iterations) {
-                        return finalText[index];
-                    }
-                    return symbols[Math.floor(Math.random() * symbols.length)];
-                })
-                .join("");
-                
-                if(iterations >= finalText.length) { 
-                    clearInterval(interval);
-                    element.style.color = color; 
-                }
-                
-                iterations += 1/2; 
-            }, 30); 
+        // --- DOM Elements ---
+        const cardMusic = document.getElementById('card-music');
+        const cardBass = document.getElementById('card-bass');
+        const cardWa = document.getElementById('card-wa');
+        const cardMute = document.getElementById('card-mute');
+        const musicStatus = document.getElementById('music-status');
+        const bassLed = document.getElementById('bass-led');
+
+        // --- Initialize Web Audio API (Harus User Gesture) ---
+        function initAudio() {
+            if (audioContext) return; // Sudah diinisialisasi
+
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            source = audioContext.createMediaElementSource(audioElement);
+
+            // Buat BiquadFilterNode untuk Bass (Lowshelf)
+            bassFilter = audioContext.createBiquadFilter();
+            bassFilter.type = 'lowshelf';
+            bassFilter.frequency.value = 250; // Frekuensi batas bass
+            bassFilter.gain.value = 0;       // Default tidak ada boost
+
+            // Hubungkan Jalur: Source -> Filter -> Destination (Speaker)
+            source.connect(bassFilter);
+            bassFilter.connect(audioContext.destination);
         }
 
-        tombol.addEventListener('click', function() {
-           
-            popup.classList.remove('switching');
-            void popup.offsetWidth; 
-            popup.classList.add('switching');
+        // --- Logic: 1. Play/Pause Musik ---
+        cardMusic.addEventListener('click', () => {
+            initAudio(); // Pastikan AudioContext jalan
 
-            const isSuccess = tombol.classList.toggle('success');
-
-            if (isSuccess) {
-                // STATE: PROCESSING / LOADING
-                popup.classList.add('active-blue');
-                
-                // Ganti Text dengan Element HTML Spinner
-                tombol.innerHTML = '<div class="spinner"></div>';
-                
-                setTimeout(() => {
-                    scrambleText(title, "PROCESSING", "#0abde3");
-                }, 100);
-
+            if (audioElement.paused) {
+                audioElement.play();
+                musicStatus.innerText = "Playing...";
             } else {
-                // STATE: TRY AGAIN
-                popup.classList.remove('active-blue');
-                
-                // Kembalikan ke Teks biasa
-                tombol.innerText = "CONTINUE";
-                
-                setTimeout(() => {
-                    scrambleText(title, "TRY AGAIN", "#ff4757");
-                }, 100);
+                audioElement.pause();
+                musicStatus.innerText = "Paused";
             }
         });
-    </script>
 
+        // --- Logic: 2. Bass Boost Toggle (Solusi Cempreng) ---
+        cardBass.addEventListener('click', () => {
+            if (!audioContext) {
+                alert('Putar musik dulu untuk mengaktifkan filter.');
+                return;
+            }
+
+            isBassBoosted = !isBassBoosted;
+
+            if (isBassBoosted) {
+                // Aktifkan Boost (Tingkatkan Gain di Frekuensi Rendah)
+                bassFilter.gain.value = 15; // +15dB (Sesuaikan ini)
+                bassLed.classList.add('led-active');
+                console.log("Bass Boost Aktif (+15dB)");
+            } else {
+                // Matikan Boost (Gain = 0)
+                bassFilter.gain.value = 0;
+                bassLed.classList.remove('led-active');
+                console.log("Bass Boost Mati (Flat)");
+            }
+        });
+
+        // --- Logic: 3. Jawab WA (Placeholder HTTP Request ke MacroDroid) ---
+        cardWa.addEventListener('click', () => {
+            console.log("Memicu HTTP Request ke MacroDroid (Localhost)...");
+            musicStatus.innerText = "Memicu Jawab WA...";
+
+            /*
+              Contoh Implementasi Nanti:
+              (Asumsi MacroDroid mendengarkan di http://localhost:8080/answer_wa)
+
+              fetch('http://localhost:8080/answer_wa')
+                .then(response => console.log('Macro Triggered'))
+                .catch(err => console.error('Gagal trigger Makro:', err));
+            */
+            
+            alert('Fitur ini butuh konfigurasi MacroDroid di HP kamu untuk menangkap sinyal HTTP dari browser ini.');
+        });
+
+        // --- Logic: 4. Quick Mute (Fading Volume) ---
+        cardMute.addEventListener('click', () => {
+            isMuted = !isMuted;
+
+            if (isMuted) {
+                // Set Volume rendah (bukan mute total agar navigasi terdengar)
+                audioElement.volume = 0.1; 
+                cardMute.style.opacity = '0.5';
+                console.log("Volume Musik 10%");
+            } else {
+                // Balikkan Volume Normal
+                audioElement.volume = 1.0;
+                cardMute.style.opacity = '1';
+                console.log("Volume Musik 100%");
+            }
+        });
+
+    </script>
 </body>
 </html>
